@@ -27,13 +27,16 @@ set showmatch " Show the matching bracket and brace
 
 set nobackup
 
+set tabpagemax=20
 
 set guifont=Courier\ New\ 11
 
 
-" colorscheme  molokai
-" set t_Co=256
-" set background=dark
+colorscheme  molokai
+" let g:rehash256 = 1
+let g:molokai_original = 1
+set t_Co=256
+set background=dark
 
 " Install plugin management: vim-plug
 let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
@@ -41,12 +44,16 @@ if empty(glob(data_dir . '/autoload/plug.vim'))
   silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
+
 " Run PlugInstall if there are missing plugins
 autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
   \| PlugInstall --sync | source $MYVIMRC
 \| endif
 
-
+" Open files with the cursor on when the file was closed
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
 
 " ----------------------------------------
 "
@@ -57,6 +64,7 @@ autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
 call plug#begin('~/.vim/plugged')
 Plug 'scrooloose/nerdtree'
 Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 "Plug 'mhinz/vim-startify' " Quick access to recent files
 Plug 'junegunn/fzf.vim'
 "Plug 'Valloric/YouCompleteMe'
@@ -73,7 +81,13 @@ call plug#end()
 autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() |
     \ quit | endif
 
-
+" ----------------------------------------
+"
+"         vim-airline configuration
+"
+" ----------------------------------------
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_theme='ayu_dark'
 
 " -----------------------------------------
 "
@@ -154,12 +168,21 @@ let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
 
 " -----------------------------------------
 "
-" Shortcuts Configuration
+"           Shortcuts Configuration
 "
 " ----------------------------------------
 
 nnoremap <F2> :NERDTreeToggle<CR>
 
-" Filetype Detection
-autocmd BufNewFile,BufRead *.vx,*.sv set filetype=verilog
+nnoremap <C-l> gt
+nnoremap <C-h> gT
+
+" -----------------------------------------
+"
+"         Filetype Auto Recongnition
+"
+" ----------------------------------------
+autocmd BufNewFile,BufRead *.sv set filetype=verilog
+" For NVIDIA
+autocmd BufNewFile,BufRead *.vx,*.vcp set filetype=verilog
 
