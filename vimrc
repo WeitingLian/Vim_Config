@@ -5,6 +5,8 @@ set number
 
 syntax on
 filetype on
+filetype plugin on
+filetype indent on
 
 " Indentation
 set tabstop=4
@@ -13,6 +15,16 @@ set shiftwidth=4
 set expandtab  " Replace Tabs with Spaces
 set autoindent " Add indent when starting a new line
 set smartindent
+
+" ----------------------------------------
+"
+"       Indentation based on filetype
+"
+" ----------------------------------------
+
+" Tab characters are required in makefile
+autocmd FileType make set noexpandtab tabstop=8 shiftwidth=8 softtabstop=0
+
 
 " Display Tabs and Spaces
 set listchars=tab:>-,trail:-
