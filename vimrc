@@ -16,15 +16,7 @@ set expandtab  " Replace Tabs with Spaces
 set autoindent " Add indent when starting a new line
 set smartindent
 
-" ----------------------------------------
-"
-"       Indentation based on filetype
-"
-" ----------------------------------------
-
-" Tab characters are required in makefile
 autocmd FileType make set noexpandtab tabstop=8 shiftwidth=8 softtabstop=0
-
 
 " Display Tabs and Spaces
 set listchars=tab:>-,trail:-
@@ -186,6 +178,9 @@ let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
 
 nnoremap <F2> :NERDTreeToggle<CR>
 
+nnoremap <F9>  :vertical res +5<CR>
+nnoremap <F10> :vertical res -5<CR>
+
 nnoremap <C-l> gt
 nnoremap <C-h> gT
 
@@ -197,4 +192,20 @@ nnoremap <C-h> gT
 autocmd BufNewFile,BufRead *.sv set filetype=verilog
 " For NVIDIA
 autocmd BufNewFile,BufRead *.vx,*.vcp set filetype=verilog
+
+
+" -----------------------------------------
+"
+"              Common Function
+"
+" ----------------------------------------
+
+" Change indent
+function! s:Reindent(new_indent)
+    let &l:tabstop = a:new_indent
+    let &l:shiftwidth = a:new_indent
+    let &l:softtabstop = a:new_indent
+endfunction
+
+command -nargs=1 Reindent call s:Reindent(<f-args>)
 
