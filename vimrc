@@ -16,7 +16,15 @@ set expandtab  " Replace Tabs with Spaces
 set autoindent " Add indent when starting a new line
 set smartindent
 
+" ----------------------------------------
+"
+"       Indentation based on filetype
+"
+" ----------------------------------------
+
+" Tab characters are required in makefile
 autocmd FileType make set noexpandtab tabstop=8 shiftwidth=8 softtabstop=0
+
 
 " Display Tabs and Spaces
 set listchars=tab:>-,trail:-
@@ -30,6 +38,7 @@ set showmatch " Show the matching bracket and brace
 " set smartcase
 
 set nobackup
+set backspace=indent,eol,start
 
 set tabpagemax=20
 
@@ -67,12 +76,29 @@ endif
 
 call plug#begin('~/.vim/plugged')
 Plug 'scrooloose/nerdtree'
+Plug 'ervandew/supertab'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-fugitive'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'majutsushi/tagbar'
+Plug 'godlygeek/tabular'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 "Plug 'mhinz/vim-startify' " Quick access to recent files
 Plug 'junegunn/fzf.vim'
-"Plug 'Valloric/YouCompleteMe'
-Plug 'Shougo/neocomplete.vim'
+Plug 'preservim/nerdcommenter'
+
+if executable('man')
+    Plug 'murukeshm/vim-manpager'
+endif
+
+if has("lua") && v:version > 703 && v:version < 802
+    Plug 'Shougo/neocomplete.vim'
+else
+    if executable('cmake')
+        Plug 'Valloric/YouCompleteMe'
+    endif
+endif
 call plug#end()
 
 " ----------------------------------------
@@ -87,6 +113,57 @@ autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTr
 
 " ----------------------------------------
 "
+"           supertab configuration
+"
+" ----------------------------------------
+let g:SuperTabRetainCompletionType = 2
+let g:SuperTabDefaultCompletionType = "<C-X><C-O>"
+
+" ----------------------------------------
+"
+"           tagbar configuration
+"
+" ----------------------------------------
+let g:tagbar_ctags_bin = 'ctags'
+" let g:tagbar_left = 1                "tagbar displayed on left side. Right by default
+let g:tagbar_width = 30              "Width: 30 columns. Default:40
+let g:tagbar_autofocus = 1           "Put the cursor in the tagbar window when it's opened
+let g:tagbar_sort = 0                "No sort for tags. Sort by default
+
+" ----------------------------------------
+"
+"       The-Nerd-Commenter configuration
+"
+" ----------------------------------------
+" Create default mappings
+let g:NERDCreateDefaultMappings = 1
+
+" Add spaces after comment delimiters by default
+let g:NERDSpaceDelims = 1
+
+" Use compact syntax for prettified multi-line comments
+let g:NERDCompactSexyComs = 1
+
+" Align line-wise comment delimiters flush left instead of following code indentation
+let g:NERDDefaultAlign = 'left'
+
+" Set a language to use its alternate delimiters by default
+let g:NERDAltDelims_cpp = 1
+
+" Add your own custom formats or override the defaults
+" let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' } }
+
+" Allow commenting and inverting empty lines (useful when commenting a region)
+let g:NERDCommentEmptyLines = 1
+
+" Enable trimming of trailing whitespace when uncommenting
+let g:NERDTrimTrailingWhitespace = 1
+
+" Enable NERDCommenterToggle to check all selected lines is commented or not 
+let g:NERDToggleCheckAllLines = 1
+
+" ----------------------------------------
+"
 "         vim-airline configuration
 "
 " ----------------------------------------
@@ -98,6 +175,7 @@ let g:airline_theme='ayu_dark'
 "    neocomplete official configuration
 "
 " -----------------------------------------
+if exists('g:load_neocomplete')
 
 "Note: This option must be set in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
 " Disable AutoComplPop.
@@ -170,14 +248,16 @@ endif
 " https://github.com/c9s/perlomni.vim
 let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
 
+endif
+
 " -----------------------------------------
 "
 "           Shortcuts Configuration
 "
 " ----------------------------------------
 
-nnoremap <F2> :NERDTreeToggle<CR>
-
+nnoremap <F2>  :NERDTreeToggle<CR>
+nmap     <F8>  :TagbarToggle<CR>
 nnoremap <F9>  :vertical res +5<CR>
 nnoremap <F10> :vertical res -5<CR>
 
