@@ -94,6 +94,8 @@ Plug 'vim-airline/vim-airline-themes'
 "Plug 'mhinz/vim-startify' " Quick access to recent files
 Plug 'junegunn/fzf.vim'
 Plug 'preservim/nerdcommenter'
+Plug 'nachumk/systemverilog.vim'
+Plug 'bfrg/vim-cpp-modern'
 
 if executable('man')
     Plug 'murukeshm/vim-manpager'
