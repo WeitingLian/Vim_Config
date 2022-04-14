@@ -16,6 +16,11 @@ set expandtab  " Replace Tabs with Spaces
 set autoindent " Add indent when starting a new line
 set smartindent
 
+" Jump to the last position when reopening a file
+if has("autocmd")
+    au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
+
 " ----------------------------------------
 "
 "       Indentation based on filetype
@@ -42,14 +47,16 @@ set backspace=indent,eol,start
 
 set tabpagemax=20
 
-set guifont=Courier\ New\ 11
-
-
-colorscheme  molokai
-" let g:rehash256 = 1
-let g:molokai_original = 1
-set t_Co=256
 set background=dark
+set t_Co=256
+set t_ut=
+
+colorscheme codedark
+hi SpecialKey ctermfg=240
+
+" colorscheme  molokai
+" let g:rehash256 = 1
+" let g:molokai_original = 1
 
 " Install plugin management: vim-plug
 let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
@@ -167,8 +174,18 @@ let g:NERDToggleCheckAllLines = 1
 "         vim-airline configuration
 "
 " ----------------------------------------
+" Uncomment it when encountering something like '>4,2'
+" let &t_TI = ""
+" let &t_TE = ""
+
 let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:airline#extensions#tabline#buffer_nr_show = 1
+
 let g:airline_theme='ayu_dark'
+let laststatus = 2
+" let g:airline_powerline_fonts = 1
 
 " ----------------------------------------
 "
@@ -299,18 +316,31 @@ endif
 
 nnoremap <F2>  :NERDTreeToggle<CR>
 nmap     <F8>  :TagbarToggle<CR>
-nnoremap <F9>  :vertical res +5<CR>
-nnoremap <F10> :vertical res -5<CR>
+
+nnoremap <C-F7> :resize +5<CR>
+nnoremap <C-F6> :resize -5<CR>
+nnoremap <F7>   :vertical res +5<CR>
+nnoremap <F6>   :vertical res -5<CR>
 
 " Tab switch
 nnoremap <C-n> gt
 nnoremap <C-m> gT
 
 " Window switch
-map <C-j> <C-W>j
-map <C-k> <C-W>k
-map <C-h> <C-W>h
-map <C-l> <C-W>l
+nmap <C-j> <C-W>j
+nmap <C-k> <C-W>k
+nmap <C-h> <C-W>h
+nmap <C-l> <C-W>l
+
+inoremap <C-j> <Down>
+inoremap <C-k> <Up>
+inoremap <C-h> <Left>
+inoremap <C-l> <Right>
+
+" Use C-y to make copy under Visual Mode
+vnoremap <C-y> "+y
+" Use C-p to paste under Normal Mode
+nnoremap <C-p> "*p
 
 " -----------------------------------------
 "
