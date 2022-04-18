@@ -324,6 +324,9 @@ nnoremap <C-F6> :resize -5<CR>
 nnoremap <F7>   :vertical res +5<CR>
 nnoremap <F6>   :vertical res -5<CR>
 
+nnoremap <F5>   :buffers<CR>:buffer<Space>
+nnoremap <F4>   :buffers<CR>:bdelete<Space>
+
 " Tab switch
 nnoremap <C-n> gt
 nnoremap <C-m> gT
