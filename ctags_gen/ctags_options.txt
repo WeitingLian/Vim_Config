@@ -1,0 +1,84 @@
+# =========== Language Settings ===========
+--languages=SystemVerilog
+--langmap=SystemVerilog:.sv.svh.svi.v.vh
+
+
+# =========== Field Settings ===========
+# Access permission(localparam, protected, virtual)
+--fields=+a
+# File name
+--fields=+f
+# Inheritance
+--fields=+i
+# Type full name
+#--fields=+K
+# Programing languages
+#--fields=+l
+# Method implementation
+#--fields=+m
+# Line number
+--fields=+n
+# Scope
+# --fields=+s
+# Function arg list
+--fields=+S
+# Variable type(int, string, logic)
+--fields=+t
+# Type key
+#--fields=+Z
+
+
+# =========== Type Def Updates ===========
+# c  constants (parameter, specparam, enum values)
+# d  text macros
+# e  events
+# f  functions
+# m  modules
+# n  net data types
+# p  ports
+# r  variable data types
+# t  tasks
+# b  blocks (begin, fork)
+# i  instances of module or interface
+# A  assertions (assert, assume, cover, restrict)
+# C  classes
+# V  covergroups
+# E  enumerators
+# I  interfaces
+# M  modports
+# K  packages
+# P  programs
+# Q  prototypes (extern, pure) [off]
+# R  properties
+# S  structs and unions
+# T  type declarations
+# H  checkers
+# L  clocking
+# q  sequences
+# w  struct and union members
+# l  interface class
+# O  constraints
+# N  nettype declarations
+
+--kinds-SystemVerilog=+C
+--kinds-SystemVerilog=+c
+--kinds-SystemVerilog=+E
+--kinds-SystemVerilog=+f
+--kinds-SystemVerilog=+I
+--kinds-SystemVerilog=+l
+--kinds-SystemVerilog=+m
+--kinds-SystemVerilog=+K
+--kinds-SystemVerilog=+P
+--kinds-SystemVerilog-+t
+--kinds-SystemVerilog=+S
+
+
+# =============== Regex Enhancement ===================
+# Function
+--regex-SystemVerilog=/^[ \t]*((virtual|pure[ \t]+virtual)[ \t]+)?(automatic|static)?[ \t]*function[ \t]+(automatic|static)?[ \t]+`[^ \t(]+\([^)]*\)[ \t]+([a-zA-Z_][a-zA-Z0-9_]*)[ \t]*\(/\5/f,function/
+--regex-SystemVerilog=/^[ \t]*((virtual|pure[ \t]+virtual)[ \t]+)?(automatic|static)?[ \t]*function[ \t]+(automatic|static)?[ \t]+[a-zA-Z_][a-zA-Z0-9_]*(\[[^]]*\])?[ \t]+([a-zA-Z_][a-zA-Z0-9_]*)[ \t]*\(/\6/f,function/
+--regex-SystemVerilog=/^[ \t]*((virtual|pure[ \t]+virtual)[ \t]+)?(automatic|static)?[ \t]*function[ \t]+(automatic|static)?[ \t]+void[ \t]+([a-zA-Z_][a-zA-Z0-9_]*)[ \t]*\(/\5/f,function/
+--regex-SystemVerilog=/^[ \t]*extern[ \t]+function[ \t]+([a-zA-Z_][a-zA-Z0-9_]*)/\1/Q,externfunc/
+# Task
+--regex-SystemVerilog=/^[ \t]*((virtual|pure[ \t]+virtual)[ \t]+)?(automatic|static)?[ \t]*task[ \t]+(automatic|static)?[ \t]+([a-zA-Z_][a-zA-Z0-9_]*)[ \t]*\(/\5/t,task/
+--regex-SystemVerilog=/^[ \t]*extern[ \t]+task[ \t]+([a-zA-Z_][a-zA-Z0-9_]*)/\1/Q,externtask/

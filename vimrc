@@ -54,6 +54,9 @@ set t_ut=
 colorscheme codedark
 hi SpecialKey ctermfg=240
 
+set cusorline
+set cursorcolumn
+
 " colorscheme  molokai
 " let g:rehash256 = 1
 " let g:molokai_original = 1
@@ -138,6 +141,83 @@ let g:tagbar_ctags_bin = 'ctags'
 let g:tagbar_width = 30              "Width: 30 columns. Default:40
 let g:tagbar_autofocus = 1           "Put the cursor in the tagbar window when it's opened
 let g:tagbar_sort = 0                "No sort for tags. Sort by default
+"let g:Tlist ctags Cmd ='$HOME/LocalBuild/ctags*
+let g:tagbar_left = 1
+let g:tagbar_width = 30
+let g:tagbar_zoomwidth = 0
+"let g:tagbar_autofocus = 1
+
+let g:tagbar_debug = 0
+let g:tagbar_debug_file = ''
+let g:tagbar_verbose = 0
+
+let g:tagbar_autostart = 0
+let g:tagbar_auto_update = 0
+let g:tagbar_autoclose = 1
+let g:tagbar_open_on_focus = 0
+let g:tagbar_parse_on_open = 0
+
+let g:tagbar_compact = 1
+let g:tagbar_show_tag_count = 1
+let g:tagbar_highlight_mode = 1
+
+function! LoadTagbar()
+    if !exists('g:loaded_tagbar')
+        packadd tagbar
+        source ~/.vim/pack/vendor/opt/tagbar/plugin/tagbar.vim
+        source ~/.vim/pack/vendor/opt/tagbar/autoload/tagbar.vim
+        "call timer start(10,{-> tagbar#init#init()})
+        let g:loaded tagbar.
+    endif
+endfunction
+
+set tags=,/tags;,./.tags;,tags;,.tags;
+
+"Smart project detection and tag loading
+function! SmartTagsSetup()
+    set tags=./tags;,./.tags;,tags;,.tags;
+    let l:project_root = FindprojectRoot()
+    if l:project_root != ''
+        " Add tags in project root
+        let l:root_tags =l:project_root . '/tags'
+        if filereadable(l:root_tags)
+            execute 'set tags+=' . l:root_tags
+        endif
+        " Add tags in sub directories
+        " let l:subdirs =['src', 'rtl', 'verification', 'lib', 'include']
+        " for 'dir'in l:subdirs
+        "     let l:dir_tags =l:project_root .'/' . dir . '/tags'
+        "     if filereadable(l:dir_tags)
+        "         execute 'set tags+=' . l:dir_tags
+        "     endif
+        " endfor
+    endif
+endfunction
+
+function! FindProjectRoot()
+    let l:current_dir = expand('%:p:h')
+    let l:root_dir = l:current_dir
+    "Up-searching until finding tags
+    while l:root_dir != '/'
+        "Check common files/dirs in project root
+        if isdirectory(l:root_dir . '/.svn')  ||
+         \ isdirectory(l:root_dir . '/.git')  ||
+         \ isdirectory(l:root_dir . '/.root') ||
+         \ filereadable(l:root_dir . '/ctags_filelist.txt') ||
+         \ filereadable(l:root_dir . '/.project')
+           return l:root_dir
+        endif
+        let l:root_dir =fnamemodify(l:root_dir, ':h')
+    endwhile
+    return ''
+endfunction
+
+autocmd BufEnter * call SmartTagsSetup()
+"Refresh tag manually
+command! -nargs=0 RefreshTags call SmartTagsSetup() | echo "Tags refreshed"
+
+command! -nargs=0 showTagsPaths echo &tags
+command! -nargs=0 ShowprojectRoot echo "project root: " . FindprojectRoot()
 
 " ----------------------------------------
 "
@@ -317,7 +397,8 @@ endif
 " ----------------------------------------
 
 nnoremap <F2>  :NERDTreeToggle<CR>
-nmap     <F8>  :TagbarToggle<CR>
+nmap     <F8>  :call LoadTagbar()<CR>:TagbarToggle<CR>
+nmap     <F9>  :call LoadTagbar()<CR>:TagbarUpdate<CR>
 
 nnoremap <C-F7> :resize +5<CR>
 nnoremap <C-F6> :resize -5<CR>
@@ -327,15 +408,29 @@ nnoremap <F6>   :vertical res -5<CR>
 nnoremap <F5>   :buffers<CR>:buffer<Space>
 nnoremap <F4>   :buffers<CR>:bdelete<Space>
 
+" Tag jumps
+nnoremap gd <C-]>
+nnoremap gb <C-t>
+
 " Tab switch
 nnoremap <C-n> gt
 nnoremap <C-m> gT
+" Tab switch in different windows284"-- Horizontal split285
+nnoremap gs :stag <C-r><C-w><CR>
+"-- Vertical split
+nnoremap gv :vsplit \| tag <C-r><C-w><CR>
+"-- Preview split
+nnoremap gp :ptag <C-r><C-w><CR>
+"-- New tab split
+nnoremap gt :tab tag <C-r><C-W><CR>
 
 " Window switch
 nmap <C-j> <C-W>j
 nmap <C-k> <C-W>k
 nmap <C-h> <C-W>h
 nmap <C-l> <C-W>l
+" Close preview window
+nnoremap <leader>wc :pclose<CR>
 
 inoremap <C-j> <Down>
 inoremap <C-k> <Up>
@@ -347,6 +442,9 @@ vnoremap <C-y> "+y
 " Use C-p to paste under Normal Mode
 nnoremap <C-p> "*p
 
+" Use // to search the string selected in visual node
+vnoremap //y/<c-r>"<cr>
+
 " -----------------------------------------
 "
 "         Filetype Auto Recongnition
@@ -356,6 +454,12 @@ autocmd BufNewFile,BufRead *.sv set filetype=verilog
 " For NVIDIA
 autocmd BufNewFile,BufRead *.vx,*.vcp set filetype=verilog
 
+" -----------------------------------------
+"
+"              Common Function
+"
+" ----------------------------------------
+let g:python_highlight_all = 1
 
 " -----------------------------------------
 "
@@ -371,4 +475,3 @@ function! s:Reindent(new_indent)
 endfunction
 
 command -nargs=1 Reindent call s:Reindent(<f-args>)
-
